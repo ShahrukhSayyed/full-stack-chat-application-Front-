@@ -1,0 +1,208 @@
+<!-- my content start -->
+<div id="mycontent">
+  <nav class="navbar navbar-expand-md navbar-custom navbar-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand font-adjust" href="">Group Chat Application
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span></span>
+        <i class="fa fa-ellipsis-v text-dark"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link text-light" href="">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" [routerLink]="['/chatroom/new']">New Chat Room</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-light" [routerLink]="['/change-password']">Change Password</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-light" (click)="logout()">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- navbar end -->
+
+  <div class="container-fluid top-adjust">
+    <div class="row">
+      <!-- left section -->
+      <div class="col-12 col-sm-12 col-md-4 col-lg-4 box-decoration border ">
+        <div class="row border">
+
+          <div class="col-3">
+
+            <img src="assets/user.svg" class="img-adjust img-fluid rounded-circle">
+          </div>
+
+          <div class="col-9" style="font-size: 1.5em">
+            {{userInfo.firstName}} {{userInfo.lastName}}
+            <i class="online" *ngIf="disconnectedSocket == false"></i>
+            <i class="offline" *ngIf="disconnectedSocket == true"></i>
+          </div>
+        </div>
+        <br/>
+
+        <div class="row" >
+          <div class="col-lg-12 col-12 people-list">
+            <h5>Joined Groups</h5>
+            <span *ngIf="joinedGroups.length == 0"> Not joined any group yet</span>
+
+            <div class="card my-card" id="card-design" *ngFor="let group of joinedGroups">
+              <div class="card-body p-2" (click)="groupSelectedToChat(group.chatRoomId, group.chatRoomTitle)" *ngIf="group.active == 'Yes'">
+
+                <div class="row">
+                  <div class="col-lg-4 col-4 col-sm-3 col-md-3">
+                    <first-char [userName]="group.chatRoomTitle" [userBg]="'#4abdac'" [userColor]="'white'" (notify)="showUserName($event)"></first-char>
+                  </div>
+                  <div class="col-lg-8 col-8 col-sm-9 col-md-9" class="userPresence">
+                    <span class="d-block font-adjust-heading">{{group.chatRoomTitle}}
+                      <div class="circle bg bg-success rounded-circle"></div>
+                    </span>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            <br/>
+            <h5>Groups You can Join </h5>
+            <span *ngIf="groupsAvailableToJoin.length == 0"> No Groups to join</span>
+
+            <div class="card my-card" id="card-design" *ngFor="let availGroup of groupsAvailableToJoin">
+              <div class="card-body p-2" *ngIf="availGroup.active == 'Yes'">
+
+                <div class="row">
+                  <div class="col-lg-3 col-3 col-sm-2 col-md-3">
+                    <first-char [userName]="availGroup.chatRoomTitle" [userBg]="'#4abdac'" [userColor]="'white'" (notify)="showUserName($event)"></first-char>
+                  </div>
+                  <div class="col-lg-9 col-9 col-sm-10 col-md-9" class="userPresence">
+                    <span class="d-block font-adjust-heading">{{availGroup.chatRoomTitle}}
+                      <div class="circle bg bg-dark rounded-circle"></div>
+                    </span>
+                    <span class="font-adjust-heading">
+                      <button type="button" class="btn btn-success" [routerLink]="['/chatroom/join',availGroup.chatRoomId]">Join</button>
+                    </span>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+          <!-- column of user Header end -->
+        </div>
+        <!-- row end -->
+
+      </div>
+      <!-- left section end -->
+
+      <!-- right section -->
+
+      <div class="col-12 col-sm-12 col-md-8 chat border">
+        <div >
+          <div class="chat-header clearfix mobileMenu border" *ngIf="chatRoomTitle">
+            <div class="container-fluid">
+              <div class="row">
+                
+                
+                <div class="col-2 col-md-2">
+                  <first-char [userName]="chatRoomTitle" [userBg]="'#4abdac'" [userColor]="'white'" (notify)="showUserName($event)"></first-char>
+                </div>
+
+                <div class="col-8 col-md-8">
+                  <div class="chat-with">Chat With {{chatRoomTitle}}</div>
+                  <span *ngFor="let user of usersInGroup;let last=last;">{{user }}{{(last) ? " ":", "}} </span>
+
+                </div>
+
+                <div class="col-2 col-md-1">
+                  <div class="dropdown">
+                    <a href="#" id="dropdownThreeDotsSingleView" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Menu">
+                      <i class="fas fa-ellipsis-v icons"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownThreeDotsSingleView">
+                      <a class="dropdown-item" [routerLink]="['/chatroom/share',chatRoomId]">Invite Link</a>
+                      <a class="dropdown-item" [routerLink]="['/chatroom/edit',chatRoomId]">Edit Group</a>
+                      <a class="dropdown-item" (click)="markClose(chatRoomId)">Mark It Close</a>
+                      <a class="dropdown-item" (click)="leaveChatRoom()">Leave Group</a>
+                      <a class="dropdown-item" (click)="deleteChatRoom()">Delete Group</a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <!-- end chat-about -->
+
+            </div>
+
+          </div>
+        </div>
+        <!-- end chat-header -->
+        <div >
+          <div #scrollMe [scrollTop]="(scrollToChatTop)?0:scrollMe.scrollHeight" class="chat-history" *ngIf="chatRoomTitle">
+            <div>
+              <div class="textCenter" *ngIf="chatRoomTitle">
+                <span class="cursorPointer" (click)="loadEarlierPageOfChat()">Load Previous Chat</span>
+                <br>
+                <span *ngIf="loadingPreviousChat == true">Loading...</span>
+              </div>
+              <div class="clearfix" *ngFor="let message of messageList">
+                <div class="message-data" [ngClass]="{'align-right': message.senderId == userInfo.userId}">
+                  <span class="message-data-time">{{message.createdOn | date: 'medium' }}</span> &nbsp; &nbsp;
+                  <span class="message-data-name floatLeft" *ngIf="message.senderId != userInfo.userId">
+                    <i class="fa fa-circle online"></i> {{ message?.senderName }}</span>
+                  <span class="message-data-name" *ngIf="message.senderId == userInfo.userId">{{ message?.senderName }}</span>
+                  <i class="fa fa-circle me" *ngIf="message.senderId == userInfo.userId"></i>
+
+                </div>
+                <div class="message" [ngClass]="{'float-right other-message': message.senderId == userInfo.userId, 'my-message': message.senderId != userInfo.userId}">
+                  {{message?.message | removeSpecialCharPipe: '#' | removeSpecialCharPipe: '$'}}
+                </div>
+              </div>
+
+            </div>
+            <span *ngIf="userNameTyping"> {{userNameTyping}} is typing</span>
+            <span *ngIf="!userNameTyping"> ...</span>
+          </div>
+          <div *ngIf="!chatRoomTitle" class="col-sm blankContent ">
+            Click on group to start a chat!!!
+          </div>
+          <!-- end chat-history -->
+
+          <div class="chat-message clearfix p-2" *ngIf="chatRoomTitle">
+            <div class="row">
+              <div class="col-10">
+                <textarea name="message-to-send" id="message-to-send" (keydown)="sendMessageUsingKeypress($event)" [(ngModel)]="messageText"
+                  placeholder="Type your message" rows="3"></textarea>
+
+              </div>
+              <div class="col-1">
+                  <i class="fas fa-play" (click)="sendMessage()"></i>
+                <!--<button (click)="sendMessage()">Send</button>-->
+              </div>
+            </div>
+
+          </div>
+          <!-- end chat-message -->
+        </div>
+      </div>
+
+      <!-- right section end -->
+
+    </div>
+    <!-- row end -->
+
+  </div>
+  <!-- conatiner end -->
+
+</div>
+<!-- mycontent end -->
