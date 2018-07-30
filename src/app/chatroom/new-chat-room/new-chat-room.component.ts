@@ -30,7 +30,7 @@ export class NewChatRoomComponent implements OnInit {
   public chatRoomTitle: any;
   public userName: any;
   public userId: any;
-  public baseUsrl = 'http://localhost:4200';
+  public baseUsrl = 'http://chatapp.shahrukhsayyed.tech';
   public userInfo:any;
 
   constructor(public socketService: SocketService, public appService: AppService, public router: Router, private toastr: ToastrService) { 
