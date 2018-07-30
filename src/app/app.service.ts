@@ -13,7 +13,7 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
   providedIn: 'root'
 })
 export class AppService {
-  public baseUrl = "http://localhost:3000";
+  public baseUrl = "chatapp-api.shahrukhsayyed.tech";
 
   constructor(private _http: HttpClient) {
     console.log("AppService is called");
