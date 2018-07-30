@@ -10,7 +10,7 @@ import * as io from 'socket.io-client';
   
 @Injectable()
 export class SocketService {
-  public baseUrl = "http://localhost:3000";
+  public baseUrl = "chatapp-api.shahrukhsayyed.tech";
   public socket;
 
   constructor(private _http: HttpClient) {
