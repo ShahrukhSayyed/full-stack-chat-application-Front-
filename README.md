@@ -108,8 +108,8 @@ message and user will be able to view all the previous chat in that room.
 
 - All the APIs and Events are well documented using npm module apiDoc 
 
-* [APIDOC](http://chatapp.apidoc.shahrukhsayyed.tech) - APIDOC of chat-application backend
-* [EventDoc](http://chatapp.eventdoc.shahrukhsayyed.tech) - EventDoc of chat-application backend
+* [APIDOC](https://s3.ap-south-1.amazonaws.com/shahrukhsayyed.test-bucket/chatapp/apidoc/index.html) - APIDOC of chat-application backend
+* [EventDoc](https://s3.ap-south-1.amazonaws.com/shahrukhsayyed.test-bucket/chatapp/eventdoc/Events.html) - EventDoc of chat-application backend
 
 ## Built With
 
